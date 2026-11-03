@@ -20,6 +20,7 @@ label.ck{display:flex;gap:6px;align-items:center;font-size:14px}
 .b{display:inline-block;font-size:11px;padding:1px 7px;border-radius:99px;border:1px solid var(--line);margin-right:6px;vertical-align:1px}
 .b.new{background:var(--new);color:#fff;border-color:var(--new)}.b.src{color:var(--pri);border-color:var(--pri)}
 .btn{display:inline-block;margin:0 0 14px;padding:7px 14px;border-radius:8px;background:var(--pri);color:#fff;text-decoration:none;font-size:14px}
+.b.dd{font-weight:600;color:var(--tx)}.b.dd.soon{background:var(--new);color:#fff;border-color:var(--new)}
 .closed{opacity:.5}.empty{text-align:center;color:var(--mut);padding:40px 0}
 </style>
 </head>
@@ -41,14 +42,22 @@ const $=id=>document.getElementById(id);
 const LS='hf-seen';let seen=new Set();try{seen=new Set(JSON.parse(localStorage.getItem(LS)||'[]'))}catch{}
 const isOpen=l=>/모집중|공고중|접수/.test(l.status);
 let all=[];
+// SH의 날짜는 마감이 아니라 발표일이라 디데이에서 제외
+function dday(l){
+  if(l.source==='SH'||!l.deadline||!isOpen(l))return'';
+  const t=new Date();t.setHours(0,0,0,0);
+  const n=Math.round((new Date(l.deadline+'T00:00:00')-t)/864e5);
+  if(isNaN(n)||n<0)return'';
+  return `<span class="b dd${n<=3?' soon':''}">${n?'D-'+n:'D-Day'}</span>`;
+}
 function render(){
   const q=$('q').value.trim().toLowerCase(),typ=$('typ').value,fit=$('fit').checked,op=$('open').checked;
   const r=all.filter(l=>(!fit||l.fit)&&(!op||isOpen(l))&&(!typ||l.type===typ)&&(!q||(l.title+l.type+l.region).toLowerCase().includes(q)));
   $('list').innerHTML=r.length?r.map(l=>{
     const isNew=!seen.has(l.id)&&seen.size>0;
     return `<a class="card ${isOpen(l)?'':'closed'}" href="${l.url}" target="_blank" rel="noopener">
-      <div class="t">${isNew?'<span class="b new">NEW</span>':''}<span class="b src">${l.source}</span>${esc(l.title)}</div>
-      <div class="m"><span>${esc(l.type)}</span><span>${esc(l.region)}</span><span>게시 ${l.posted}</span>${l.deadline?`<span>마감/발표 ${l.deadline}</span>`:''}<span>${esc(l.status)}</span></div></a>`}).join(''):'<div class="empty">조건에 맞는 공고가 없어요</div>';
+      <div class="t">${isNew?'<span class="b new">NEW</span>':''}<span class="b src">${l.source}</span>${dday(l)}${esc(l.title)}</div>
+      <div class="m"><span>${esc(l.type)}</span><span>${esc(l.region)}</span><span>게시 ${l.posted}</span>${l.deadline?`<span>${l.source==='SH'?'발표':'마감'} ${l.deadline}</span>`:''}<span>${esc(l.status)}</span></div></a>`}).join(''):'<div class="empty">조건에 맞는 공고가 없어요</div>';
 }
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 fetch('data/listings.json',{cache:'no-store'}).then(r=>r.json()).then(d=>{
