@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>청년주택 알리미</title>
+<style>
+:root{--bg:#f6f7f9;--card:#fff;--tx:#1d2330;--mut:#6b7385;--line:#e3e6ec;--pri:#3b6cf6;--new:#ef4444;--ok:#16a34a}
+@media(prefers-color-scheme:dark){:root{--bg:#12151c;--card:#1b2029;--tx:#e8ebf2;--mut:#98a1b5;--line:#2b3240;--pri:#6c93ff}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.5 system-ui,'Malgun Gothic',sans-serif}
+.w{max-width:860px;margin:0 auto;padding:20px 16px 60px}
+h1{font-size:22px;margin:4px 0}.sub{color:var(--mut);font-size:13px;margin-bottom:16px}
+.bar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.bar input,.bar select{padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--tx);font:inherit}
+.bar input{flex:1;min-width:140px}
+label.ck{display:flex;gap:6px;align-items:center;font-size:14px}
+.card{display:block;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:10px;color:inherit;text-decoration:none}
+.card:hover{border-color:var(--pri)}
+.t{font-weight:600}.m{color:var(--mut);font-size:13px;margin-top:4px;display:flex;flex-wrap:wrap;gap:4px 12px}
+.b{display:inline-block;font-size:11px;padding:1px 7px;border-radius:99px;border:1px solid var(--line);margin-right:6px;vertical-align:1px}
+.b.new{background:var(--new);color:#fff;border-color:var(--new)}.b.src{color:var(--pri);border-color:var(--pri)}
+.closed{opacity:.5}.empty{text-align:center;color:var(--mut);padding:40px 0}
+</style>
+</head>
+<body>
+<div class="w">
+  <h1>🏠 청년주택 알리미</h1>
+  <div class="sub" id="upd">불러오는 중…</div>
+  <div class="bar">
+    <input id="q" placeholder="검색 (예: 강남, 행복주택, 매입)">
+    <select id="reg"><option value="">전체 지역</option></select>
+    <select id="typ"><option value="">전체 유형</option></select>
+    <label class="ck"><input type="checkbox" id="fit" checked>1인 청년 후보만</label>
+    <label class="ck"><input type="checkbox" id="open" checked>모집중만</label>
+  </div>
+  <div id="list"></div>
+</div>
+<script>
+const $=id=>document.getElementById(id);
+const LS='hf-seen';let seen=new Set();try{seen=new Set(JSON.parse(localStorage.getItem(LS)||'[]'))}catch{}
+const isOpen=l=>/모집중|공고중|접수/.test(l.status);
+let all=[];
+function render(){
+  const q=$('q').value.trim().toLowerCase(),reg=$('reg').value,typ=$('typ').value,fit=$('fit').checked,op=$('open').checked;
+  const r=all.filter(l=>(!fit||l.fit)&&(!op||isOpen(l))&&(!reg||l.region===reg)&&(!typ||l.type===typ)&&(!q||(l.title+l.type+l.region).toLowerCase().includes(q)));
+  $('list').innerHTML=r.length?r.map(l=>{
+    const isNew=!seen.has(l.id)&&seen.size>0;
+    return `<a class="card ${isOpen(l)?'':'closed'}" href="${l.url}" target="_blank" rel="noopener">
+      <div class="t">${isNew?'<span class="b new">NEW</span>':''}<span class="b src">${l.source}</span>${esc(l.title)}</div>
+      <div class="m"><span>${esc(l.type)}</span><span>${esc(l.region)}</span><span>게시 ${l.posted}</span>${l.deadline?`<span>마감/발표 ${l.deadline}</span>`:''}<span>${esc(l.status)}</span></div></a>`}).join(''):'<div class="empty">조건에 맞는 공고가 없어요</div>';
+}
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+fetch('data/listings.json',{cache:'no-store'}).then(r=>r.json()).then(d=>{
+  all=d.listings;
+  $('upd').textContent='마지막 수집 '+new Date(d.updated).toLocaleString('ko-KR')+' · LH청약플러스 · SH 서울주거포털 · 3시간마다 자동 갱신';
+  for(const [id,k] of [['reg','region'],['typ','type']])[...new Set(all.map(l=>l[k]))].sort().forEach(v=>$(id).add(new Option(v,v)));
+  render();
+  try{localStorage.setItem(LS,JSON.stringify(all.map(l=>l.id)))}catch{}
+}).catch(()=>$('upd').textContent='데이터를 불러오지 못했어요 (로컬에서는 서버로 열어주세요)');
+['q','reg','typ','fit','open'].forEach(i=>$(i).addEventListener('input',render));
+</script>
+</body>
+</html>
