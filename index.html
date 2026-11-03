@@ -19,6 +19,7 @@ label.ck{display:flex;gap:6px;align-items:center;font-size:14px}
 .t{font-weight:600}.m{color:var(--mut);font-size:13px;margin-top:4px;display:flex;flex-wrap:wrap;gap:4px 12px}
 .b{display:inline-block;font-size:11px;padding:1px 7px;border-radius:99px;border:1px solid var(--line);margin-right:6px;vertical-align:1px}
 .b.new{background:var(--new);color:#fff;border-color:var(--new)}.b.src{color:var(--pri);border-color:var(--pri)}
+.btn{display:inline-block;margin:0 0 14px;padding:7px 14px;border-radius:8px;background:var(--pri);color:#fff;text-decoration:none;font-size:14px}
 .closed{opacity:.5}.empty{text-align:center;color:var(--mut);padding:40px 0}
 </style>
 </head>
@@ -26,9 +27,9 @@ label.ck{display:flex;gap:6px;align-items:center;font-size:14px}
 <div class="w">
   <h1>🏠 청년주택 알리미</h1>
   <div class="sub" id="upd">불러오는 중…</div>
+  <a class="btn" href="https://github.com/joyc0411/housing-finder/actions/workflows/scan.yml" target="_blank" rel="noopener" title="Run workflow 버튼을 누르면 1분 내 갱신됩니다">🔄 지금 갱신하기</a>
   <div class="bar">
     <input id="q" placeholder="검색 (예: 강남, 행복주택, 매입)">
-    <select id="reg"><option value="">전체 지역</option></select>
     <select id="typ"><option value="">전체 유형</option></select>
     <label class="ck"><input type="checkbox" id="fit" checked>1인 청년 후보만</label>
     <label class="ck"><input type="checkbox" id="open" checked>모집중만</label>
@@ -41,8 +42,8 @@ const LS='hf-seen';let seen=new Set();try{seen=new Set(JSON.parse(localStorage.g
 const isOpen=l=>/모집중|공고중|접수/.test(l.status);
 let all=[];
 function render(){
-  const q=$('q').value.trim().toLowerCase(),reg=$('reg').value,typ=$('typ').value,fit=$('fit').checked,op=$('open').checked;
-  const r=all.filter(l=>(!fit||l.fit)&&(!op||isOpen(l))&&(!reg||l.region===reg)&&(!typ||l.type===typ)&&(!q||(l.title+l.type+l.region).toLowerCase().includes(q)));
+  const q=$('q').value.trim().toLowerCase(),typ=$('typ').value,fit=$('fit').checked,op=$('open').checked;
+  const r=all.filter(l=>(!fit||l.fit)&&(!op||isOpen(l))&&(!typ||l.type===typ)&&(!q||(l.title+l.type+l.region).toLowerCase().includes(q)));
   $('list').innerHTML=r.length?r.map(l=>{
     const isNew=!seen.has(l.id)&&seen.size>0;
     return `<a class="card ${isOpen(l)?'':'closed'}" href="${l.url}" target="_blank" rel="noopener">
@@ -52,12 +53,12 @@ function render(){
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 fetch('data/listings.json',{cache:'no-store'}).then(r=>r.json()).then(d=>{
   all=d.listings;
-  $('upd').textContent='마지막 수집 '+new Date(d.updated).toLocaleString('ko-KR')+' · LH청약플러스 · SH 서울주거포털 · 3시간마다 자동 갱신';
-  for(const [id,k] of [['reg','region'],['typ','type']])[...new Set(all.map(l=>l[k]))].sort().forEach(v=>$(id).add(new Option(v,v)));
+  $('upd').textContent='마지막 수집 '+new Date(d.updated).toLocaleString('ko-KR')+' · 서울 지역 · LH청약플러스 · SH 서울주거포털';
+  for(const [id,k] of [['typ','type']])[...new Set(all.map(l=>l[k]))].sort().forEach(v=>$(id).add(new Option(v,v)));
   render();
   try{localStorage.setItem(LS,JSON.stringify(all.map(l=>l.id)))}catch{}
 }).catch(()=>$('upd').textContent='데이터를 불러오지 못했어요 (로컬에서는 서버로 열어주세요)');
-['q','reg','typ','fit','open'].forEach(i=>$(i).addEventListener('input',render));
+['q','typ','fit','open'].forEach(i=>$(i).addEventListener('input',render));
 </script>
 </body>
 </html>

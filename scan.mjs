@@ -69,11 +69,11 @@ async function notify(items) {
 
 let old = { listings: [] };
 try { old = JSON.parse(await readFile(OUT, 'utf8')); } catch {}
-const known = new Map(old.listings.map(l => [l.id, l]));
+const known = new Map(old.listings.filter(l => l.region.startsWith('서울')).map(l => [l.id, l]));
 
 const results = await Promise.allSettled([scanLH(), scanSH()]);
 const fresh = [];
-results.forEach((r, i) => r.status === 'fulfilled' ? fresh.push(...r.value) : console.error(['LH', 'SH'][i], '실패:', r.reason.message));
+results.forEach((r, i) => r.status === 'fulfilled' ? fresh.push(...r.value.filter(l => l.region.startsWith('서울'))) : console.error(['LH', 'SH'][i], '실패:', r.reason.message));
 if (!fresh.length) { console.error('수집 결과 없음 — 기존 데이터 유지'); process.exit(1); }
 
 const today = new Date().toISOString().slice(0, 10);
