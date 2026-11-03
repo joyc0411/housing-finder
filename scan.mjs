@@ -49,9 +49,40 @@ async function scanSH() {
   });
 }
 
+// 서울시 청년안심주택 포털 모집공고 (공공/민간 임대 모두 포함, 내부 JSON 목록)
+const SOCO = 'https://soco.seoul.go.kr/youth';
+async function scanSoco() {
+  const out = [];
+  for (const page of [1, 2]) {
+    const r = await fetch(`${SOCO}/pgm/home/yohome/bbsListJson.json`, {
+      method: 'POST', headers: { 'user-agent': UA, 'content-type': 'application/x-www-form-urlencoded' },
+      body: `bbsId=BMSR00015&pageIndex=${page}`,
+    });
+    if (!r.ok) throw new Error(`soco → ${r.status}`);
+    for (const x of (await r.json()).resultList) {
+      const text = strip(x.content || '');
+      const gu = (text.match(/주택위치\s*:\s*서울특별시\s*(\S+구)/) || [])[1];
+      // 청약신청 구간의 마지막 날짜를 마감일로 사용 (없으면 목록의 청약신청일)
+      const span = (text.match(/청약신청\s*:\s*(.{0,60})/) || [])[1] || '';
+      let end = x.optn4 || '', y = end.slice(2, 4);
+      for (const m of span.matchAll(/(?:[‘']?(\d{2})\.\s*)?(\d{1,2})\.\s*(\d{1,2})\./g)) {
+        y = m[1] || y;
+        end = `20${y}-${m[2].padStart(2, '0')}-${m[3].padStart(2, '0')}`;
+      }
+      out.push({
+        id: `soco-${x.boardId}`, source: '청년안심', type: `청년안심주택 ${x.optn2 === '2' ? '민간임대' : '공공임대'}${x.optn5 === '2' ? '·추가' : ''}`,
+        title: x.nttSj, region: gu ? `서울특별시 ${gu}` : '서울특별시', posted: x.optn1, deadline: end,
+        status: end && end < new Date().toISOString().slice(0, 10) ? '마감' : '접수중',
+        url: `${SOCO}/bbs/BMSR00015/view.do?optn1=${x.optn1}&boardId=${x.boardId}&menuNo=400008`,
+      });
+    }
+  }
+  return out;
+}
+
 function tag(l) {
   const t = `${l.type} ${l.title}`;
-  l.fit = YOUTH.test(t) && !NOT_FIT.test(t);
+  l.fit = (l.source === '청년안심' || YOUTH.test(t)) && !NOT_FIT.test(t);
   return l;
 }
 
@@ -71,9 +102,9 @@ let old = { listings: [] };
 try { old = JSON.parse(await readFile(OUT, 'utf8')); } catch {}
 const known = new Map(old.listings.filter(l => l.region.startsWith('서울')).map(l => [l.id, l]));
 
-const results = await Promise.allSettled([scanLH(), scanSH()]);
+const results = await Promise.allSettled([scanLH(), scanSH(), scanSoco()]);
 const fresh = [];
-results.forEach((r, i) => r.status === 'fulfilled' ? fresh.push(...r.value.filter(l => l.region.startsWith('서울'))) : console.error(['LH', 'SH'][i], '실패:', r.reason.message));
+results.forEach((r, i) => r.status === 'fulfilled' ? fresh.push(...r.value.filter(l => l.region.startsWith('서울'))) : console.error(['LH', 'SH', '청년안심'][i], '실패:', r.reason.message));
 if (!fresh.length) { console.error('수집 결과 없음 — 기존 데이터 유지'); process.exit(1); }
 
 const today = new Date().toISOString().slice(0, 10);

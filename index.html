@@ -53,7 +53,7 @@ function render(){
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 fetch('data/listings.json',{cache:'no-store'}).then(r=>r.json()).then(d=>{
   all=d.listings;
-  $('upd').textContent='마지막 수집 '+new Date(d.updated).toLocaleString('ko-KR')+' · 서울 지역 · LH청약플러스 · SH 서울주거포털';
+  $('upd').textContent='마지막 수집 '+new Date(d.updated).toLocaleString('ko-KR')+' · 서울 지역 · 청년안심주택(공공·민간) · SH 서울주거포털 · LH청약플러스';
   for(const [id,k] of [['typ','type']])[...new Set(all.map(l=>l[k]))].sort().forEach(v=>$(id).add(new Option(v,v)));
   render();
   try{localStorage.setItem(LS,JSON.stringify(all.map(l=>l.id)))}catch{}
