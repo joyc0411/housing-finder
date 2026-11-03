@@ -43,16 +43,21 @@ const LS='hf-seen';let seen=new Set();try{seen=new Set(JSON.parse(localStorage.g
 const isOpen=l=>/모집중|공고중|접수/.test(l.status);
 let all=[];
 // SH의 날짜는 마감이 아니라 발표일이라 디데이에서 제외
-function dday(l){
-  if(l.source==='SH'||!l.deadline||!isOpen(l))return'';
+function days(l){
+  if(l.source==='SH'||!l.deadline||!isOpen(l))return null;
   const t=new Date();t.setHours(0,0,0,0);
   const n=Math.round((new Date(l.deadline+'T00:00:00')-t)/864e5);
-  if(isNaN(n)||n<0)return'';
-  return `<span class="b dd${n<=3?' soon':''}">${n?'D-'+n:'D-Day'}</span>`;
+  return isNaN(n)||n<0?null:n;
 }
+function dday(l){
+  const n=days(l);
+  return n===null?'':`<span class="b dd${n<=3?' soon':''}">${n?'D-'+n:'D-Day'}</span>`;
+}
+// 디데이 빠른 순 → 디데이 없는 모집중 → 마감 (같은 그룹 안에서는 게시일 최신순 유지)
+const rank=l=>{const n=days(l);return n!==null?n:isOpen(l)?9998:9999};
 function render(){
   const q=$('q').value.trim().toLowerCase(),typ=$('typ').value,fit=$('fit').checked,op=$('open').checked;
-  const r=all.filter(l=>(!fit||l.fit)&&(!op||isOpen(l))&&(!typ||l.type===typ)&&(!q||(l.title+l.type+l.region).toLowerCase().includes(q)));
+  const r=all.filter(l=>(!fit||l.fit)&&(!op||isOpen(l))&&(!typ||l.type===typ)&&(!q||(l.title+l.type+l.region).toLowerCase().includes(q))).sort((a,b)=>rank(a)-rank(b));
   $('list').innerHTML=r.length?r.map(l=>{
     const isNew=!seen.has(l.id)&&seen.size>0;
     return `<a class="card ${isOpen(l)?'':'closed'}" href="${l.url}" target="_blank" rel="noopener">

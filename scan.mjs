@@ -63,7 +63,7 @@ async function scanSoco() {
       const text = strip(x.content || '');
       const gu = (text.match(/주택위치\s*:\s*서울특별시\s*(\S+구)/) || [])[1];
       // 청약신청 구간의 마지막 날짜를 마감일로 사용 (없으면 목록의 청약신청일)
-      const span = (text.match(/청약신청\s*:\s*(.{0,60})/) || [])[1] || '';
+      const span = (text.match(/청약신청\s*:\s*([^■]{0,60})/) || [])[1] || '';
       let end = x.optn4 || '', y = end.slice(2, 4);
       for (const m of span.matchAll(/(?:[‘']?(\d{2})\.\s*)?(\d{1,2})\.\s*(\d{1,2})\./g)) {
         y = m[1] || y;
