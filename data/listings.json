@@ -1,6 +1,32 @@
 {
- "updated": "2026-11-03T05:06:41.857Z",
+ "updated": "2026-11-05T05:34:40.670Z",
  "listings": [
+  {
+   "id": "soco-6719",
+   "source": "청년안심",
+   "type": "청년안심주택 민간임대",
+   "title": "[민간임대] 송정역 케이제이타워 최초모집공고",
+   "region": "서울특별시 강서구",
+   "posted": "2026-11-03",
+   "deadline": "2026-11-15",
+   "status": "접수중",
+   "url": "https://soco.seoul.go.kr/youth/bbs/BMSR00015/view.do?optn1=2026-11-03&boardId=6719&menuNo=400008",
+   "fit": true,
+   "firstSeen": "2026-11-05"
+  },
+  {
+   "id": "soco-6718",
+   "source": "청년안심",
+   "type": "청년안심주택 민간임대",
+   "title": "[민간임대] 효창공원앞역 해링턴 플레이스 용산 리버뷰 최초모집공고",
+   "region": "서울특별시 용산구",
+   "posted": "2026-11-03",
+   "deadline": "2026-11-15",
+   "status": "접수중",
+   "url": "https://soco.seoul.go.kr/youth/bbs/BMSR00015/view.do?optn1=2026-11-03&boardId=6718&menuNo=400008",
+   "fit": true,
+   "firstSeen": "2026-11-05"
+  },
   {
    "id": "soco-6717",
    "source": "청년안심",
@@ -22,7 +48,7 @@
    "region": "서울특별시 성북구",
    "posted": "2026-10-29",
    "deadline": "2026-11-04",
-   "status": "접수중",
+   "status": "마감",
    "url": "https://soco.seoul.go.kr/youth/bbs/BMSR00015/view.do?optn1=2026-10-29&boardId=6716&menuNo=400008",
    "fit": true,
    "firstSeen": "2026-11-03"
@@ -35,7 +61,7 @@
    "region": "서울특별시 구로구",
    "posted": "2026-10-29",
    "deadline": "2026-11-04",
-   "status": "접수중",
+   "status": "마감",
    "url": "https://soco.seoul.go.kr/youth/bbs/BMSR00015/view.do?optn1=2026-10-29&boardId=6715&menuNo=400008",
    "fit": true,
    "firstSeen": "2026-11-03"
@@ -74,7 +100,7 @@
    "region": "서울특별시 노원구",
    "posted": "2026-10-29",
    "deadline": "2026-11-03",
-   "status": "접수중",
+   "status": "마감",
    "url": "https://soco.seoul.go.kr/youth/bbs/BMSR00015/view.do?optn1=2026-10-29&boardId=6710&menuNo=400008",
    "fit": true,
    "firstSeen": "2026-11-03"
