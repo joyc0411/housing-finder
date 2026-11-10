@@ -1,6 +1,58 @@
 {
- "updated": "2026-11-05T05:36:57.781Z",
+ "updated": "2026-11-10T06:44:01.109Z",
  "listings": [
+  {
+   "id": "soco-6724",
+   "source": "청년안심",
+   "type": "청년안심주택 민간임대·추가",
+   "title": "[민간임대] 화랑대역 에이트플레이스 추가모집공고",
+   "region": "서울특별시 중랑구",
+   "posted": "2026-11-05",
+   "deadline": "2026-11-10",
+   "status": "접수중",
+   "url": "https://soco.seoul.go.kr/youth/bbs/BMSR00015/view.do?optn1=2026-11-05&boardId=6724&menuNo=400008",
+   "fit": true,
+   "firstSeen": "2026-11-10"
+  },
+  {
+   "id": "soco-6722",
+   "source": "청년안심",
+   "type": "청년안심주택 민간임대·추가",
+   "title": "[민간임대] 개봉역 세이지움 개봉 추가모집공고",
+   "region": "서울특별시 구로구",
+   "posted": "2026-11-05",
+   "deadline": "2026-11-10",
+   "status": "접수중",
+   "url": "https://soco.seoul.go.kr/youth/bbs/BMSR00015/view.do?optn1=2026-11-05&boardId=6722&menuNo=400008",
+   "fit": true,
+   "firstSeen": "2026-11-10"
+  },
+  {
+   "id": "soco-6721",
+   "source": "청년안심",
+   "type": "청년안심주택 민간임대·추가",
+   "title": "[민간임대] 숭곡초교역(예정) 성북펠릭스 추가모집공고",
+   "region": "서울특별시 성북구",
+   "posted": "2026-11-05",
+   "deadline": "2026-11-10",
+   "status": "접수중",
+   "url": "https://soco.seoul.go.kr/youth/bbs/BMSR00015/view.do?optn1=2026-11-05&boardId=6721&menuNo=400008",
+   "fit": true,
+   "firstSeen": "2026-11-10"
+  },
+  {
+   "id": "soco-6720",
+   "source": "청년안심",
+   "type": "청년안심주택 민간임대·추가",
+   "title": "[민간임대] 건대입구역 더포디엄830 추가모집공고",
+   "region": "서울특별시 광진구",
+   "posted": "2026-11-05",
+   "deadline": "2026-11-10",
+   "status": "접수중",
+   "url": "https://soco.seoul.go.kr/youth/bbs/BMSR00015/view.do?optn1=2026-11-05&boardId=6720&menuNo=400008",
+   "fit": true,
+   "firstSeen": "2026-11-10"
+  },
   {
    "id": "soco-6719",
    "source": "청년안심",
@@ -416,6 +468,32 @@
    "url": "https://www.i-sh.co.kr/main/lay2/program/S1T294C295/www/brd/m_241/view.do?seq=310258",
    "fit": true,
    "firstSeen": "2026-11-03"
+  },
+  {
+   "id": "sh-310041",
+   "source": "SH",
+   "type": "국민공공임대주택",
+   "title": "2026년 재개발임대주택 일반모집 공고(2026. 9. 9.)",
+   "region": "서울특별시",
+   "posted": "2026-09-09",
+   "deadline": "2027-03-30",
+   "status": "모집마감",
+   "url": "https://www.i-sh.co.kr/main/lay2/program/S1T294C295/www/brd/m_241/view.do?seq=310041",
+   "fit": false,
+   "firstSeen": "2026-11-10"
+  },
+  {
+   "id": "sh-309467",
+   "source": "SH",
+   "type": "장기전세주택",
+   "title": "제51차 장기전세주택 입주자 모집공고(2026.08.31.공고)",
+   "region": "서울특별시",
+   "posted": "2026-08-31",
+   "deadline": "2027-03-05",
+   "status": "모집마감",
+   "url": "https://www.i-sh.co.kr/main/lay2/program/S1T294C295/www/brd/m_241/view.do?seq=309467",
+   "fit": false,
+   "firstSeen": "2026-11-10"
   }
  ]
 }
